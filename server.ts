@@ -1,4 +1,4 @@
-import fastify from 'fastify';
+import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as path from 'path';
 import * as chokidar from 'chokidar';
@@ -7,7 +7,7 @@ import type { Player } from './src/ai';
 
 // --- Configuration ---
 const MAIN_MODEL_PATH = './model_main';
-const MCTS_THINK_TIME = 15000; // 15 seconds, since we are on a dedicated server
+const MCTS_THINK_TIME = 15000; // 15 seconds
 const PORT = 8080;
 
 let model: tf.LayersModel | null = null;
@@ -54,13 +54,20 @@ function setupModelWatcher() {
 
 const server = fastify({ logger: true });
 
-server.post('/get-move', async (request, reply) => {
+// Define the request body type
+interface GetMoveRequestBody {
+    board: (Player | null)[][];
+    player: Player;
+    moves: any[];
+}
+
+server.post('/get-move', async (request: FastifyRequest<{ Body: GetMoveRequestBody }>, reply: FastifyReply) => {
     if (!model) {
         return reply.status(503).send({ error: 'AI model is not ready.' });
     }
 
     try {
-        const { board, player, moves } = request.body as { board: (Player | null)[][], player: Player, moves: any[] };
+        const { board, player, moves } = request.body;
         if (!board || !player || !moves) {
             return reply.status(400).send({ error: 'Missing or invalid request body' });
         }
