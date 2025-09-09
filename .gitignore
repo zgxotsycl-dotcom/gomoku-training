@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+
+# Compiled JavaScript output
+dist/
+
+# Data files
+*.csv
+*.jsonl
+
+# Local environment files
+.env
+
+# OS-specific
+.DS_Store
+
+# Model and training data folders
+/replay_buffer/
+/replay_buffer_archive/
+/training_checkpoints/
+/training_checkpoints_archive/
+/model_main/
+/gomoku_model/
+/gomoku_model_prod/
