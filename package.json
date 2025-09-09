@@ -26,8 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.13",
-    "typescript": "^5.9.2",
-    "@types/fastify": "^4.0.0"
+    "typescript": "^5.9.2"
   },
   "keywords": [],
   "author": "",
