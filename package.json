@@ -18,14 +18,15 @@
     "deploy:gcp": "gcloud compute scp --recurse ./model_main/* gomoku-inference-server:~/Fun/training_scripts/model_main"
   },
   "dependencies": {
+    "@fastify/cors": "^9.0.1",
     "@supabase/supabase-js": "^2.57.0",
     "@tensorflow/tfjs-node-gpu": "4.19.0",
-    "@fastify/cors": "^9.0.1",
+    "chokidar": "^3.6.0",
     "dotenv": "^17.2.2",
-    "fastify": "^4.28.1",
-    "chokidar": "^3.6.0"
+    "fastify": "^4.28.1"
   },
   "devDependencies": {
+    "@types/chokidar": "^1.7.5",
     "@types/node": "^20.19.13",
     "typescript": "^5.9.2"
   },

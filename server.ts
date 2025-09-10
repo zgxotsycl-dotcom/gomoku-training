@@ -38,7 +38,7 @@ function setupModelWatcher() {
         }
     });
 
-    watcher.on('change', async (filePath) => {
+    watcher.on('change', async (filePath: string) => {
         console.log(`Detected model file change: ${filePath}`);
         console.log('Attempting to hot-reload the model...');
         try {
