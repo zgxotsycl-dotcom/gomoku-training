@@ -9,5 +9,5 @@
     "skipLibCheck": true
   },
   "include": ["**/*.ts"],
-  "exclude": []
+  "exclude": ["node_modules"]
 }
