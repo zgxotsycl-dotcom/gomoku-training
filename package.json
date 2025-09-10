@@ -10,7 +10,8 @@
     "start-self-play": "tsc && node dist/self_play_trainer.js",
     "predict": "tsc && node dist/predict.js",
     "pretrain": "tsc && node dist/pretrain_from_knowledge.js",
-    "build": "tsc --module commonjs --esModuleInterop --target es2020 --moduleResolution node --skipLibCheck --outDir dist src/ai.ts src/model.ts src/create_initial_model.ts src/self_play_trainer.ts src/simpleTest.ts src/tf_test.ts evaluator.ts export_ai_knowledge.ts game_worker.ts get_data_count.ts predict.ts pretrain_from_knowledge.ts server.ts start_pipeline.ts test_env_load.ts test_worker_load.ts train_nn.ts trainer.ts upload_model.ts worker_selfplay.ts",
+    "build": "esbuild server.ts --bundle --platform=node --outfile=dist/server.js --external:@tensorflow/tfjs-node",
+    "build:cpu": "replace-in-file \"./src/server.ts\" \"@tensorflow/tfjs-node-gpu\" \"@tensorflow/tfjs-node\" && tsc && replace-in-file \"./src/server.ts\" \"@tensorflow/tfjs-node\" \"@tensorflow/tfjs-node-gpu\""
     "evaluate": "tsc && node dist/evaluate_models.js",
     "start:pipeline": "tsc && node dist/start_pipeline.js",
     "start:final": "docker run --gpus all --rm -v %CD%\\replay_buffer:/app/replay_buffer -v %CD%\\training_checkpoints:/app/training_checkpoints -v %CD%\\model_main:/app/model_main -v %CD%\\replay_buffer_archive:/app/replay_buffer_archive -v %CD%\\training_checkpoints_archive:/app/training_checkpoints_archive gomoku-trainer",
@@ -20,7 +21,8 @@
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@supabase/supabase-js": "^2.57.0",
-    "@tensorflow/tfjs-node-gpu": "4.19.0",
+        "@tensorflow/tfjs-node-gpu": "4.19.0",
+    "@tensorflow/tfjs-node": "^4.19.0",
     "chokidar": "^3.6.0",
     "dotenv": "^17.2.2",
     "fastify": "^4.28.1"
@@ -28,7 +30,9 @@
   "devDependencies": {
     "@types/chokidar": "^1.7.5",
     "@types/node": "^20.19.13",
-    "typescript": "^5.9.2"
+    "esbuild": "^0.25.9",
+    "typescript": "^5.9.2",
+    "replace-in-file": "^7.1.0"
   },
   "keywords": [],
   "author": "",
