@@ -1,4 +1,5 @@
 import fastify, { FastifyRequest, FastifyReply } from 'fastify';
+import cors from '@fastify/cors';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 import * as path from 'path';
 import * as chokidar from 'chokidar';
@@ -53,6 +54,12 @@ function setupModelWatcher() {
 // --- Server Setup ---
 
 const server = fastify({ logger: true });
+
+// Register CORS
+server.register(cors, {
+    origin: "*", // Allow all origins
+    methods: ["GET", "POST"],
+});
 
 // Define the request body type
 interface GetMoveRequestBody {
