@@ -1,20 +1,10 @@
-# Node modules
-node_modules/
+# Dependencies
+/node_modules
+/dist
 
-# Compiled JavaScript output
-dist/
-
-# Data files
-*.csv
-*.jsonl
-
-# Local environment files
-.env
-
-# OS-specific
-.DS_Store
-
-# Model and training data folders
+# Data
+/ai_knowledge_export.csv
+/training_data.jsonl
 /replay_buffer/
 /replay_buffer_archive/
 /training_checkpoints/
@@ -22,3 +12,10 @@ dist/
 /model_main/
 /gomoku_model/
 /gomoku_model_prod/
+
+# Logs
+npm-debug.log*
+nohup.out
+
+# OS-specific
+.DS_Store
