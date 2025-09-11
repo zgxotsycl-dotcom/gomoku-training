@@ -2,17 +2,19 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install curl for debugging purposes
+# Install curl for debugging
 RUN apt-get update && apt-get install -y curl
 
-# Copy all project files
-COPY . .
+# Copy package files first
+COPY training_scripts/package*.json ./
 
-# Change to the correct directory before running npm commands
-WORKDIR /app/training_scripts
-
-# Install all dependencies and build the project
+# Install all dependencies
 RUN npm install --also=dev
+
+# Copy the rest of the source code
+COPY training_scripts/ ./
+
+# Build the project
 RUN npm run build
 
 # The command to run the server
