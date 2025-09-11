@@ -1,6 +1,5 @@
 import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
-
 import * as tf from '@tensorflow/tfjs-node';
 import * as path from 'path';
 import * as fs from 'fs/promises';
@@ -82,7 +81,7 @@ server.post('/get-move', async (request: FastifyRequest<{ Body: GetMoveRequestBo
         const { bestMove } = await findBestMoveNN(model, board, player, MCTS_THINK_TIME);
         return reply.send({ move: bestMove });
     } catch (e: any) {
-        server.log.info(`Error during get-move: ${e.message}`);
+        server.log.error(e, 'Error during get-move');
         return reply.status(500).send({ error: 'Internal error' });
     }
 });
@@ -93,7 +92,7 @@ async function start() {
         setInterval(checkForNewModel, MODEL_CHECK_INTERVAL_MS);
         await server.listen({ port: PORT, host: '0.0.0.0' });
     } catch (err: any) {
-        server.log.info(`Server startup error: ${err.message}`);
+        server.log.error(err, 'Server startup error');
         process.exit(1);
     }
 }
