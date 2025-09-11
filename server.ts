@@ -1,9 +1,9 @@
 import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import * as tf from '@tensorflow/tfjs-node';
-import * as path from 'path';
 import * as fs from 'fs/promises';
-import * as chokidar from 'chokidar';
+import * as path from 'path';
+import { createClient } from '@supabase/supabase-js';
 import { findBestMoveNN } from './src/ai';
 import type { Player } from './src/ai';
 
@@ -13,8 +13,7 @@ const MCTS_THINK_TIME = 15000;
 const PORT = 8080;
 const MODEL_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
-// --- Supabase (for model download only) ---
-import { createClient } from '@supabase/supabase-js';
+// --- Supabase Configuration ---
 const SUPABASE_URL = 'https://xkwgfidiposftwwasdqs.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrd2dmaWRpcG9zZnR3d2FzZHFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwODM3NzMsImV4cCI6MjA3MDY1OTc3M30.-9n_26ga07dXFiFOShP78_p9cEcIKBxHBEYJ1A1gaiE';
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -25,9 +24,10 @@ let currentModelTimestamp: string | null = null;
 // --- Model Loading and Auto-Update ---
 
 async function downloadAndLoadModel(): Promise<boolean> {
-    console.log('[Model Syncer] Downloading latest model...');
+    console.log('[Model Syncer] Downloading latest model from Supabase...');
     try {
         await fs.mkdir(MODEL_DIR, { recursive: true });
+
         const { data: jsonBlob, error: jsonError } = await supabase.storage.from('models').download('gomoku_model/model.json');
         if (jsonError) throw jsonError;
         await fs.writeFile(path.join(MODEL_DIR, 'model.json'), Buffer.from(await jsonBlob.arrayBuffer()));
@@ -38,16 +38,16 @@ async function downloadAndLoadModel(): Promise<boolean> {
 
         console.log('[Model Syncer] Loading model into memory...');
         model = await tf.loadLayersModel(`file://${path.resolve(MODEL_DIR)}/model.json`);
-        console.log('[Model Syncer] New model loaded!');
+        console.log('[Model Syncer] New model loaded successfully!');
         return true;
     } catch (e) {
-        console.error('[Model Syncer] Failed to sync model:', e);
+        console.error('[Model Syncer] Failed to download or load model:', e);
         return false;
     }
 }
 
 async function checkForNewModel() {
-    console.log('[Model Syncer] Checking for new model...');
+    console.log('[Model Syncer] Checking for new model version in Supabase...');
     try {
         const { data, error } = await supabase.storage.from('models').list('gomoku_model', { limit: 1, offset: 0, sortBy: { column: 'updated_at', order: 'desc' } });
         if (error) throw error;
@@ -74,7 +74,7 @@ server.register(cors, { origin: "*" });
 interface GetMoveRequestBody { board: (Player | null)[][]; player: Player; moves: any[]; }
 
 server.post('/get-move', async (request: FastifyRequest<{ Body: GetMoveRequestBody }>, reply: FastifyReply) => {
-    if (!model) return reply.status(503).send({ error: 'AI model is not ready.' });
+    if (!model) return reply.status(503).send({ error: 'AI model is not ready or still loading.' });
     try {
         const { board, player, moves } = request.body;
         if (!board || !player || !moves) return reply.status(400).send({ error: 'Missing request body' });
