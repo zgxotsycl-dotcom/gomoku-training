@@ -35,6 +35,6 @@ COPY --from=builder /app/training_scripts/server.ts ./server.ts
 COPY --from=builder /app/training_scripts/src ./src
 
 # Copy the model for the server to use
-COPY ./training_scripts/model_main ./model_main
+
 
 CMD ["node", "dist/server.js"]
