@@ -34,8 +34,7 @@ COPY package.json package-lock.json* ./
 RUN npm install --omit=dev
 
 # Copy the built application from the builder stage
-COPY --from=builder /app/dist ./
-dist
+COPY --from=builder /app/dist ./dist
 
 # Copy other necessary files
 COPY model_main ./model_main
