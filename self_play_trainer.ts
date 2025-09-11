@@ -2,7 +2,7 @@ import { Worker } from 'node:worker_threads';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
-const NUM_WORKERS = 7; // Adjust based on your CPU cores
+const NUM_WORKERS = 4; // Adjust based on your CPU cores
 const SAVE_INTERVAL_MS = 60000; // Save data every 60 seconds
 const OUTPUT_FILE = './training_data.jsonl';
 const MODEL_DIR = './gomoku_model';
