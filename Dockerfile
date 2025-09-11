@@ -1,19 +1,14 @@
 # --- Stage 1: Build --- 
 FROM node:20-slim as builder
 
+# Set the working directory for the entire build stage
 WORKDIR /app
 
-# Copy all source files from the root
+# Copy all project files
 COPY . .
 
-# Set the working directory to the scripts folder
-WORKDIR /app/training_scripts
-
-# Install all dependencies
-RUN npm install --also=dev
-
-# Build the project
-RUN npm run build:cpu
+# Run npm install and build inside the correct subfolder
+RUN cd training_scripts && npm install --also=dev && npm run build:cpu
 
 # --- Stage 2: Production --- 
 FROM node:20-slim
@@ -29,12 +24,5 @@ RUN npm install --omit=dev
 
 # Copy the built application from the builder stage
 COPY --from=builder /app/training_scripts/dist ./dist
-
-# Copy the server script to run
-COPY --from=builder /app/training_scripts/server.ts ./server.ts
-COPY --from=builder /app/training_scripts/src ./src
-
-# Copy the model for the server to use
-
 
 CMD ["node", "dist/server.js"]
