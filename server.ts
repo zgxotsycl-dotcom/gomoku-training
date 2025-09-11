@@ -1,4 +1,5 @@
 import fastify, { FastifyRequest, FastifyReply } from 'fastify';
+import cors from '@fastify/cors';
 
 import * as tf from '@tensorflow/tfjs-node';
 import * as path from 'path';
