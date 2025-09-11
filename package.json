@@ -10,7 +10,7 @@
     "start-self-play": "tsc && node dist/self_play_trainer.js",
     "predict": "tsc && node dist/predict.js",
     "pretrain": "tsc && node dist/pretrain_from_knowledge.js",
-    "build": "./node_modules/typescript/bin/tsc --outDir dist --rootDir . --resolveJsonModule true --module commonjs --esModuleInterop true --target es2020 *.ts src/*.ts",
+    "build": "tsc",
     "build:cpu": "replace-in-file \"./server.ts\" \"@tensorflow/tfjs-node-gpu\" \"@tensorflow/tfjs-node\" && npm run build && replace-in-file \"./server.ts\" \"@tensorflow/tfjs-node\" \"@tensorflow/tfjs-node-gpu\"",
     "evaluate": "tsc && node dist/evaluate_models.js",
     "start:pipeline": "tsc && node dist/start_pipeline.js",
